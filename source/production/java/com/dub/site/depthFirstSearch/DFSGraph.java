@@ -35,6 +35,37 @@ public class DFSGraph extends Graph implements Serializable {
 		}
 	}
 	
+	public DFSGraph(DFSGraph source) {
+		this.N = source.N;
+		this.stack = new SimpleStack<>();
+		this.edges = new ClassifiedJSONEdge[source.N][source.N]; 
+			
+		for (Vertex vertex : source.getVertices()) {
+			DFSVertex dfsVertex = (DFSVertex)vertex;
+			DFSVertex v = new DFSVertex(dfsVertex);// deep copy
+			this.getVertices().add(v);
+		}
+
+		if (source.edges[0][0] != null) {
+			this.edges[0][0] 
+					= new ClassifiedJSONEdge(source.edges[0][0]);
+		}
+		
+		for (int i1 = 0; i1 < source.N; i1++) {
+			for (int i2 = 0; i2 < source.N; i2++) {	
+				if (source.edges[i1][i2] != null) {
+				
+					this.edges[i1][i2] 
+							= new ClassifiedJSONEdge(source.edges[i1][i2]);
+				}
+			}// for
+		}// for
+		
+	}
+	
+	
+	
+	
 	public ClassifiedJSONEdge[][] getEdges() {
 		return edges;
 	}
@@ -59,28 +90,6 @@ public class DFSGraph extends Graph implements Serializable {
 		this.time = time;
 	}
 	
-	
-
-
-	public DFSGraph clone() {// deep copy
-		
-		DFSGraph graph = new DFSGraph(this.vertices.size());
-		
-		for (Vertex vertex : this.getVertices()) {
-			DFSVertex dfsVertex = (DFSVertex)vertex;
-			DFSVertex v = (DFSVertex)dfsVertex.clone();
-			graph.getVertices().add(v);
-		}
-		
-		for (int i1 = 0; i1 < this.getVertices().size(); i1++) {
-			for (int i2 = 0; i2 < this.getVertices().size(); i2++) {
-				graph.edges[i1][i2] = this.edges[i1][i2];
-			}
-		}
-		
-		return graph;
-	}
-
 	
 	public StepResult searchStep() {
 		/** one vertex is visited at each step */
@@ -126,10 +135,9 @@ public class DFSGraph extends Graph implements Serializable {
 	    	u.setF(time);
 	    	
 	    	if (!stack.isEmpty()) {
-	    		index = stack.pop();
-	    	
+	    		index = stack.pop(); 	
 	    	} else {
-	    		index = this.findNotVisited(lastFound);// can be null
+	    		index = this.findNotVisited();// can be null
 	    		if (index == null) {
 	    			result.setStatus(StepResult.Status.FINISHED);
 	    		}	
@@ -138,10 +146,9 @@ public class DFSGraph extends Graph implements Serializable {
 		
 	    // prepare Ajax response
 	    // need to clone the array edges too 
-	    snapshot = this.clone();
+
+	    snapshot = new DFSGraph(this);
 		result.setGraph(snapshot);
-	
-		//snapshot.display();
 		
 		return result;
 	        
@@ -158,26 +165,26 @@ public class DFSGraph extends Graph implements Serializable {
 		}
 	}
 	
-	
-	// helper methods
-	public Integer findNotVisited(int first) {
-				
+	public Integer findNotVisited() {
 		int nind = 0;
 		DFSVertex v = null;
-		for (nind = 0; nind < N; nind++) {
+		for (nind = this.lastFound + 1; nind < N; nind++) {
 			v = (DFSVertex)this.vertices.get(nind);
 			if (v.getColor().equals(DFSVertex.Color.BLACK)) {
 				break;
 			}
 		}
+		
 		if (nind < N) {
 			this.lastFound = nind;// save as initial value for next lookup 
+		
 			return nind;
 		} else {
 			return null;
 		}
-		
+				
 	}// findNotVisited
+	
 	
 	public Integer findNotVisitedAndMark(List<Integer> list, int from) {
 		// successor lookup		

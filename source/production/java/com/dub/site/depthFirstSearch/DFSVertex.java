@@ -1,8 +1,6 @@
 package com.dub.site.depthFirstSearch;
 
 
-import java.util.ArrayList;
-
 public class DFSVertex extends Vertex {
 
 	/**
@@ -14,6 +12,20 @@ public class DFSVertex extends Vertex {
 	private Color color = Color.BLACK;
 	private int d = 0;
 	private int f = 0;
+	
+	
+	public DFSVertex() {
+		super();
+		
+	}
+	
+	public DFSVertex(DFSVertex source) {
+		super(source);
+		this.parent = source.parent;
+		this.color = source.color;
+		this.d = source.d;
+		this.f = source.f;
+	}
 	
 	public Integer getParent() {
 		return parent;
@@ -48,18 +60,6 @@ public class DFSVertex extends Vertex {
 	}
 
 
-	public DFSVertex clone() {
-		DFSVertex v = new DFSVertex();
-		v.name = name;
-		v.parent = parent;
-		v.color = color;
-		v.d = d;
-		v.f = f;
-		v.adjacency = new ArrayList<>();
-		v.adjacency.addAll(adjacency);
-		return v;
-	}
-	
 	public String toString() {
 		return this.name + " " + this.parent 
 				+ " " + this.color + " " + this.d + "/" + this.f;

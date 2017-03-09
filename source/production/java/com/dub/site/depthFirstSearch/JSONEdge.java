@@ -5,14 +5,22 @@ public class JSONEdge {
 	
 	protected int from;// origin
 	protected int to;// end
-
+	
 	public JSONEdge() {
+	}
+	
+	public JSONEdge(JSONEdge source) {
+		if (source != null) {
+			this.from = source.from;
+			this.to = source.to;
+		}
 	}
 	
 	public JSONEdge(int from, int to) {
 		this.to = to;
 		this.from = from;
 	}
+	
 	
 	public int getFrom() {
 		return from;

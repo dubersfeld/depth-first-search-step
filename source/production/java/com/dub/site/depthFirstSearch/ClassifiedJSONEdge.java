@@ -4,11 +4,19 @@ package com.dub.site.depthFirstSearch;
 public class ClassifiedJSONEdge extends JSONEdge {
 	
 	private Type type;// edge classifier
-
-	public ClassifiedJSONEdge(JSONEdge edge) {
-		super(edge.getFrom(), edge.getTo());
+	
+	public ClassifiedJSONEdge(JSONEdge source) {
+		super(source);
 		this.type = null;
 	}
+	
+	public ClassifiedJSONEdge(ClassifiedJSONEdge source) {
+		super(source);
+		if (source != null) { 
+			this.type = source.type;
+		}
+	}
+
 	
 	public String toString() {// for debug only
 		return super.toString() + " " + this.type; 

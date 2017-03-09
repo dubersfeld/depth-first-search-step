@@ -1,6 +1,5 @@
 package com.dub.site.depthFirstSearch;
 
-//import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +17,17 @@ public class Vertex implements Cloneable {
 	@JsonIgnore
 	protected List<Integer> adjacency;// all adjacent vertices indexes, unused in AJAX response
 	
+	
 	public Vertex() {
 		adjacency = new ArrayList<Integer>();
+	}
+	
+	public Vertex(Vertex source) {
+		this.name = source.name;
+		this.adjacency = new ArrayList<Integer>();
+		for (int i = 0; i < source.adjacency.size(); i++) {
+			this.adjacency.add(source.adjacency.get(i));
+		}
 	}
 	
 	public String getName() {
@@ -38,6 +46,7 @@ public class Vertex implements Cloneable {
 		this.adjacency = adjacency;
 	}
 	
+	/*
 	public Vertex clone() {
 		Vertex v = new Vertex();
 		v.name = this.name;
@@ -45,6 +54,7 @@ public class Vertex implements Cloneable {
 		v.adjacency.addAll(adjacency);
 		return v;
 	}
+	*/
 
 
 }

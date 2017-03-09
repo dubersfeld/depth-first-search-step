@@ -85,23 +85,11 @@ public class DFSController {
 		 * and edges
 		 */
 		
-		System.out.println("controller searchStep begin");
-		
 		HttpSession session = request.getSession();
 		DFSGraph graph = (DFSGraph)session.getAttribute("graph");
 				
 		StepResult result = graph.searchStep();
-			
-		/*
-		if (result.getStatus().equals(StepResult.Status.FINISHED)) {
-			System.out.println("controller: FINISHED");
-			//graph.display();
-		} else if (result.getStatus().equals(StepResult.Status.STEP)) {
-			//DFSGraph snapshot = result.getGraph();
-			//snapshot.displayEdges();
-		}
-		*/
-		
+				
 		return result;
 			
 	}// searchStep
