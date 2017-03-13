@@ -438,7 +438,7 @@ function canvasApp() {
 		drawConnect(v1, v2, edgeType);
 	}
 	
-	function redrawType() {
+	function redraw() {
     	// only use mAdj for drawing connections
     	// clear canvas
     	fillBackground();
@@ -467,40 +467,9 @@ function canvasApp() {
       		}
     	}
     
- 	}// redrawType
+ 	}// redraw
  	
-
-
-  	function initDraw() {
-    	// only use mAdj for drawing connections
-    	// clear canvas
-    	fillBackground();
-
-    	setTextStyle();
-
-    	context.textBaseline = "middle";
-    	context.textAlign = "center";
-
-    	var N = graph.mV.length;
-
-    	// draw all vertices
-    	for (var i = 0; i < N; i++) {
-      		drawVertex(graph.mV[i]);
-    	}
-
-    	var arc = 0;
-    	// draw all connections
-    	for (var i = 0; i < N; i++) {
-      		var conn = graph.mAdj[i]; // all vertices connected to vertex i
-      		for (var k = 0; k < conn.length; k++) {
-      			arc = (graph.mAdj[conn[k]].indexOf(i) >= 0) ? 1 : 0;
-      			//console.log("connect " + i + "," + conn[k])
-        		drawConnect(graph.mV[i], graph.mV[conn[k]], arc);        
-      		}
-    	}
-    
- 	}// initDraw
-
+ 	
   	function randomize() {
 
     	/* adding random edges, only Nedges (sparse)
@@ -559,10 +528,48 @@ function canvasApp() {
       		}
     	}// while
     	 	
+    	//var disp;
     	
     	
+    	  graph.mAdj[0] = [7,1,8];
+    	    graph.mAdj[1] = [0,2];
+    	    graph.mAdj[2] = [3];
+    	    graph.mAdj[3] = [11];
+    	    graph.mAdj[4] = [3];
+    	    graph.mAdj[5] = [6];
+    	    graph.mAdj[6] = [13];
+    	    graph.mAdj[7] = [0,1];
+    	    graph.mAdj[8] = [2,16];
+    	    graph.mAdj[9] = [16,10];
+    	    graph.mAdj[10] = [2,4];
+    	    graph.mAdj[11] = [];
+    	    graph.mAdj[12] = [11,18];
+    	    graph.mAdj[13] = [19];
+    	    graph.mAdj[14] = [15,21,22];
+    	    graph.mAdj[15] = [16,21];
+    	    graph.mAdj[16] = [10];
+    	    graph.mAdj[17] = [10,11,9,23];
+    	    graph.mAdj[18] = [12,26,19];
+    	    graph.mAdj[19] = [11,26];
+    	    graph.mAdj[20] = [27];
+    	    graph.mAdj[21] = [15];
+    	    graph.mAdj[22] = [29];
+    	    graph.mAdj[23] = [30,29];
+    	    graph.mAdj[24] = [30,17];
+    	    graph.mAdj[25] = [];
+    	    graph.mAdj[26] = [];
+    	    graph.mAdj[27] = [34,20];
+    	    graph.mAdj[28] = [22,21];
+    	    graph.mAdj[29] = [];
+    	    graph.mAdj[30] = [24];
+    	    graph.mAdj[31] = [];
+    	    graph.mAdj[32] = [];
+    	    graph.mAdj[33] = [32];
+    	    graph.mAdj[34] = [33];
+    	    	
     
- 		initDraw();// draw graph before search
+ 		//initDraw();// draw graph before search
+ 		redraw();// draw graph before search
  
 		$('#initForm').find(':submit')[0].disabled = false;
     	
@@ -672,13 +679,13 @@ function canvasApp() {
 					// edge classifying
 					
 					
-					redrawType();
+					redraw();
 					
 					$('#status').text('Searching...');
 				}
 				
 				if (data["status"] == "FINISHED") {
-					redrawType();// last state
+					redraw();// last state
 					$('#initForm').find(':submit')[0].disabled = true;
 					console.log("Search completed");
 					$('#status').text('Search completed');
