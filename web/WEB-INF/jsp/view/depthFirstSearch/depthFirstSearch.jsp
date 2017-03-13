@@ -559,45 +559,8 @@ function canvasApp() {
       		}
     	}// while
     	 	
-    	var disp;
     	
     	
-    	  graph.mAdj[0] = [7,1,8];
-    	    graph.mAdj[1] = [0,2];
-    	    graph.mAdj[2] = [3];
-    	    graph.mAdj[3] = [11];
-    	    graph.mAdj[4] = [3];
-    	    graph.mAdj[5] = [6];
-    	    graph.mAdj[6] = [13];
-    	    graph.mAdj[7] = [0,1];
-    	    graph.mAdj[8] = [2,16];
-    	    graph.mAdj[9] = [16,10];
-    	    graph.mAdj[10] = [2,4];
-    	    graph.mAdj[11] = [];
-    	    graph.mAdj[12] = [11,18];
-    	    graph.mAdj[13] = [19];
-    	    graph.mAdj[14] = [15,21,22];
-    	    graph.mAdj[15] = [16,21];
-    	    graph.mAdj[16] = [10];
-    	    graph.mAdj[17] = [10,11,9,23];
-    	    graph.mAdj[18] = [12,26,19];
-    	    graph.mAdj[19] = [11,26];
-    	    graph.mAdj[20] = [27];
-    	    graph.mAdj[21] = [15];
-    	    graph.mAdj[22] = [29];
-    	    graph.mAdj[23] = [30,29];
-    	    graph.mAdj[24] = [30,17];
-    	    graph.mAdj[25] = [];
-    	    graph.mAdj[26] = [];
-    	    graph.mAdj[27] = [34,20];
-    	    graph.mAdj[28] = [22,21];
-    	    graph.mAdj[29] = [];
-    	    graph.mAdj[30] = [24];
-    	    graph.mAdj[31] = [];
-    	    graph.mAdj[32] = [];
-    	    graph.mAdj[33] = [32];
-    	    graph.mAdj[34] = [33];
-    	    	
     
  		initDraw();// draw graph before search
  
