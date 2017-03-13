@@ -49,15 +49,9 @@ public class DFSController {
 			DFSVertex v1 = (DFSVertex)graph.getVertices().get(from);
 			v1.getAdjacency().add(to);
 			/** helper adjacency matrix needed for edge classification */
-			graph.getEdges()[from][to] = new ClassifiedJSONEdge(edge);
+			//graph.getEdges()[from][to] = new ClassifiedJSONEdge(edge);
 		}
 		
-		for (int i = 0; i < jsonEdges.size(); i++) {
-			System.out.println(jsonEdges.get(i).getFrom() 
-						+ "," + jsonEdges.get(i).getTo());
-		}
-	
-	
 		/** Save the new graph to the session context */
 		session.setAttribute("graph", graph);
 			

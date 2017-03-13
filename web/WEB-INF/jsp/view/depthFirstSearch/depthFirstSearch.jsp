@@ -97,12 +97,10 @@ function canvasApp() {
     	var context = theCanvas.getContext("2d");
   	}// if
 
-  	var sourcename;
+  	//var sourcename;
   	
   	var graphReady = false;
   	
-  	var classifiedEdges = [];
-  
   	var xMin = 0;
   	var yMin = 0;
   	var xMax = theCanvas.width;
@@ -158,7 +156,100 @@ function canvasApp() {
         context.fillText(vertex.mName, vertex.xPos, vertex.yPos);    
         context.fillText(timestamp, vertex.xPos + roff, vertex.yPos - roff);
 	}
+  	
+  	function drawLine(a, b) {// a and points 
+  	  
+    	var xa = a[0];
+    	var ya = a[1];
+    	var xb = b[0];
+    	var yb = b[1];
+   
+    	// main line
+    	context.beginPath();
+    	context.moveTo(xa, ya);
+    	context.lineTo(xb, yb);
+    	context.stroke();
+    	context.closePath();
 
+    	// get unity vector from a to b
+    	var dx = xa - xb;
+    	var dy = ya - yb;
+
+    	var l = Math.sqrt(dx * dx + dy * dy);
+    	var u = [dx/l, dy/l];
+
+    	var angle = (Math.PI / 180) * 15;
+
+    	var a1x = Math.cos(angle) * u[0] - Math.sin(angle) * u[1];
+    	var a1y = Math.sin(angle) * u[0] + Math.cos(angle) * u[1];
+    	var a2x = Math.cos(angle) * u[0] + Math.sin(angle) * u[1];
+    	var a2y = -Math.sin(angle) * u[0] + Math.cos(angle) * u[1];
+    	var a1 = [xb + a1x*10, yb + a1y*10];
+    	var a2 = [xb + a2x*10, yb + a2y*10];
+
+    	context.beginPath();
+    	context.moveTo(xb, yb);
+    	context.lineTo(a1[0], a1[1]);
+    	context.stroke();
+    	context.moveTo(xb, yb);
+    	context.lineTo(a2[0], a2[1]);
+    	context.stroke();
+    	context.closePath();   
+  	}// drawLine
+
+  	function drawArc(a, b) {// a and b points 
+    	// drawArc from a to b
+    	var xa = a[0];
+    	var ya = a[1];
+    	var xb = b[0];
+    	var yb = b[1];
+
+    	// get center coordinates
+    	var phi = (Math.PI/180)*30;
+   
+    	var xm = (xa + xb) / 2; 
+    	var ym = (ya + yb) / 2;
+    	var xc = xm + (yb - ya)/(2*Math.tan(phi));
+    	var yc = ym + (xa - xb)/(2*Math.tan(phi));
+
+    	// get radius
+    	var radius = Math.sqrt( (xa - xb)*(xa - xb)+(ya - yb)*(ya - yb) ) / (2*Math.sin(phi));
+    	var phia = Math.atan((yc - ya) / (xa - xc));
+    	if (xa < xc) {
+      		phia += Math.PI;
+    	}
+    	var phib = phia + 2*phi;
+    	//var phib = phia + phi;
+    	context.beginPath();
+    	context.arc(xc, yc, radius, -phia, -phib, true);  
+    	context.stroke();
+    	context.closePath();
+    	context.textBaseline = "middle";
+    	context.textAlign = "center"; 
+
+    	// get tangent vector at B
+    	var xt = Math.sin(phib);
+    	var yt = Math.cos(phib);
+    	var u = [xt, yt];
+    	var angle = (Math.PI / 180) * 15;
+
+    	var a1x = Math.cos(angle) * u[0] - Math.sin(angle) * u[1];
+    	var a1y = Math.sin(angle) * u[0] + Math.cos(angle) * u[1];
+    	var a2x = Math.cos(angle) * u[0] + Math.sin(angle) * u[1];
+    	var a2y = -Math.sin(angle) * u[0] + Math.cos(angle) * u[1];
+    	var a1 = [xb + a1x*10, yb + a1y*10];
+    	var a2 = [xb + a2x*10, yb + a2y*10];
+
+    	context.beginPath();
+    	context.moveTo(xb, yb);
+    	context.lineTo(a1[0], a1[1]);
+    	context.stroke();
+    	context.moveTo(xb, yb);
+    	context.lineTo(a2[0], a2[1]);
+    	context.stroke();
+    	context.closePath();   
+    	
+  	}// drawArc
 
     function drawArrow(a, b, edgeType) {// a and b points 
     	
@@ -221,15 +312,44 @@ function canvasApp() {
 
     }// drawArrow
 
+    function classifyEdge(u, v) {
+    	if (u == graph.mV[v.mParent]) {
+    		return "T";
+    	} else if ((u.mD < v.mD) && (v.mD < v.mF) && (v.mF < u.mF)) {
+    		return "F";
+    	} else if ((v.mD <= u.mD) && (u.mD < u.mF) & (u.mF <= v.mF)) {
+    		return "B";
+    	} else {
+    		return "C";
+    	}
+    	
+    }
     
-    function drawConnect(v1, v2, edgeType) { 
+    
+    function drawConnect(v1, v2, arc) { 
     	// v1 v2 are vertices but v2.mParent is an index so the condition is 
     	// v1 == graph.mV[v2.mParent]  
-        if (v1 == graph.mV[v2.mParent]) {
+    	console.log("drawConnect " + v1.mName + " " + v2.mName + " " + arc);
+        
+    	if (classifyEdge(v1, v2) == "T") {
+    		context.strokeStyle = "blue";
+    	} else if (classifyEdge(v1, v2) == "F") {
+    		context.strokeStyle = "green";
+    	} else if (classifyEdge(v1, v2) == "B") {
+    		context.strokeStyle = "red";
+    	} else {
+    		context.strokeStyle = "black";
+    	}
+    	/*
+    	if (v1 == graph.mV[v2.mParent]) {
           context.strokeStyle = "blue";
         } else {
           context.strokeStyle = "black";
         }
+    	*/
+        
+        
+        
         context.lineWidth = 2;
         // discuss according to geometry
         var xa, ya, xb, yb;
@@ -269,7 +389,13 @@ function canvasApp() {
           }      
         }
 
-        drawArrow([xa, ya], [xb, yb], edgeType);
+        //drawArrow([xa, ya], [xb, yb]);
+        
+        if (arc == 1) {
+      		drawArc([xa, ya], [xb, yb]);
+    	} else {
+      		drawLine([xa, ya], [xb, yb]);
+    	}
       
     }// drawConnect
     
@@ -329,8 +455,16 @@ function canvasApp() {
       		drawVertex(graph.mV[i]);
     	}
 
-    	for (var i = 0; i < classifiedEdges.length; i++) {// all edges
-    		drawEdge(classifiedEdges[i]);
+    	var arc = 0;
+    	// draw all connections
+    	for (var i = 0; i < N; i++) {
+      		var conn = graph.mAdj[i]; // all vertices connected to vertex i
+      		for (var k = 0; k < conn.length; k++) {
+      			arc = (graph.mAdj[conn[k]].indexOf(i) >= 0) ? 1 : 0;
+      			console.log("arc " + arc);
+      		
+        		drawConnect(graph.mV[i], graph.mV[conn[k]], arc);        
+      		}
     	}
     
  	}// redrawType
@@ -354,12 +488,14 @@ function canvasApp() {
       		drawVertex(graph.mV[i]);
     	}
 
+    	var arc = 0;
     	// draw all connections
     	for (var i = 0; i < N; i++) {
       		var conn = graph.mAdj[i]; // all vertices connected to vertex i
       		for (var k = 0; k < conn.length; k++) {
+      			arc = (graph.mAdj[conn[k]].indexOf(i) >= 0) ? 1 : 0;
       			//console.log("connect " + i + "," + conn[k])
-        		drawConnect(graph.mV[i], graph.mV[conn[k]]);        
+        		drawConnect(graph.mV[i], graph.mV[conn[k]], arc);        
       		}
     	}
     
@@ -424,6 +560,44 @@ function canvasApp() {
     	}// while
     	 	
     	var disp;
+    	
+    	
+    	  graph.mAdj[0] = [7,1,8];
+    	    graph.mAdj[1] = [0,2];
+    	    graph.mAdj[2] = [3];
+    	    graph.mAdj[3] = [11];
+    	    graph.mAdj[4] = [3];
+    	    graph.mAdj[5] = [6];
+    	    graph.mAdj[6] = [13];
+    	    graph.mAdj[7] = [0,1];
+    	    graph.mAdj[8] = [2,16];
+    	    graph.mAdj[9] = [16,10];
+    	    graph.mAdj[10] = [2,4];
+    	    graph.mAdj[11] = [];
+    	    graph.mAdj[12] = [11,18];
+    	    graph.mAdj[13] = [19];
+    	    graph.mAdj[14] = [15,21,22];
+    	    graph.mAdj[15] = [16,21];
+    	    graph.mAdj[16] = [10];
+    	    graph.mAdj[17] = [10,11,9,23];
+    	    graph.mAdj[18] = [12,26,19];
+    	    graph.mAdj[19] = [11,26];
+    	    graph.mAdj[20] = [27];
+    	    graph.mAdj[21] = [15];
+    	    graph.mAdj[22] = [29];
+    	    graph.mAdj[23] = [30,29];
+    	    graph.mAdj[24] = [30,17];
+    	    graph.mAdj[25] = [];
+    	    graph.mAdj[26] = [];
+    	    graph.mAdj[27] = [34,20];
+    	    graph.mAdj[28] = [22,21];
+    	    graph.mAdj[29] = [];
+    	    graph.mAdj[30] = [24];
+    	    graph.mAdj[31] = [];
+    	    graph.mAdj[32] = [];
+    	    graph.mAdj[33] = [32];
+    	    graph.mAdj[34] = [33];
+    	    	
     
  		initDraw();// draw graph before search
  
@@ -508,6 +682,8 @@ function canvasApp() {
   
   	function searchStep(graph) {// change this name in the final version
 	  	
+  	  	$('#initForm').find(':submit')[0].disabled = true;
+  	
   	  	message = {"type":"STEP"};// minimal message
   	  
 	  	$.ajax({
@@ -530,21 +706,8 @@ function canvasApp() {
 						graph.mV[i].mParent = stepVertices[i].parent;// vertex index, not vertex
 					}
 					
-					var responseEdges = data["graph"]["edges"];
+					// edge classifying
 					
-					classifiedEdges = [];
-					
-					// update edges
-					for (var i1 = 0; i1 < N; i1++) {
-						for (var i2 = 0; i2 < N; i2++) {
-							if (responseEdges[i1][i2] != null) {
-								//console.log(responseEdges[i1][i2]);
-								classifiedEdges.push(responseEdges[i1][i2]);
-							}
-						}
-					}
-					
-					console.log("classifiedEdges: " + classifiedEdges.length);
 					
 					redrawType();
 					
@@ -571,7 +734,7 @@ function canvasApp() {
   	}
  
   	$("#initelem").submit(function(event) { randomize(graph, Nedges); return false; }); 
-  	$("#animspeed").change(function(event) { animSpeedChanged(event); return false; });
+  	//$("#animspeed").change(function(event) { animSpeedChanged(event); return false; });
   	$('#initelem').find(':submit')[0].disabled = false;
   	$('#stepForm').find(':submit')[0].disabled = true;
   
@@ -601,10 +764,13 @@ I follow closely the approach of Cormen in his classical textbook.</p>
 The search always start from the same vertex named a0.<br/>
 On each step a new Ajax request is sent to the server that sends a response that is used to update the graph.<br/>
 All newly discovered vertices are colored in green.<br/> 
-When the search is completed all vertices are blue and the edges that connect a vertex to a parent are blue.<br/> 
-The values of d and f are displayd as d/f.<br>
-An edged that belongs to a tree is marked as T<br/>
-The animation speed can be changed at any time using the range control.</p>
+When the search is completed all vertices are blue.<br/> 
+The values of d and f are displayed as d/f.<br>
+An edged that belongs to a tree is colored blue.<br/>
+A forward edge is colored green.<br/>
+A backward edge is colored red.<br/>
+All remaining edges (cross edges) are left black.<br/>
+</p>
 </header>
 
 <div id="display">
@@ -637,10 +803,6 @@ The animation speed can be changed at any time using the range control.</p>
       </form>
   </div>
 
-  <div id="animspeed">
-      <label for="animSpeed">Animation speed</label>
-      <input type="range" id="animSpeed" min="5" max="100" step="5" value="20">
-  </div>
   <div id="msg">
     <p id="status"></p>
   </div> 

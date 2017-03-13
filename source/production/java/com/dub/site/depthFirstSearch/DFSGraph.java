@@ -7,12 +7,11 @@ import java.util.List;
 public class DFSGraph extends Graph implements Serializable {
 	
 	/**
-	 * This class extends Graph and implements a Depth First Search algorithm
+	 * This subclass of Graph implements a Depth First Search algorithm
 	 */
 	private static final long serialVersionUID = 1L;
 
 	private Stack<Integer> stack;
-	private ClassifiedJSONEdge[][] edges;// used for edge classification
 	
 	private int N;
 	private int lastFound = 0;
@@ -25,55 +24,21 @@ public class DFSGraph extends Graph implements Serializable {
 	public DFSGraph(int N) {
 		super();
 		this.N = N;
-		edges = new ClassifiedJSONEdge[N][N]; 
 		stack = new SimpleStack<>();
 		index = 0;
-		for (int i1  = 0; i1 < N; i1++) {
-			for (int i2 = 0; i2 < N; i2++) {
-				edges[i1][i2] = null;
-			}
-		}
 	}
 	
-	public DFSGraph(DFSGraph source) {
+	public DFSGraph(DFSGraph source) {// deep copy c'tor
 		this.N = source.N;
 		this.stack = new SimpleStack<>();
-		this.edges = new ClassifiedJSONEdge[source.N][source.N]; 
-			
+	 		
 		for (Vertex vertex : source.getVertices()) {
 			DFSVertex dfsVertex = (DFSVertex)vertex;
 			DFSVertex v = new DFSVertex(dfsVertex);// deep copy
 			this.getVertices().add(v);
 		}
-
-		if (source.edges[0][0] != null) {
-			this.edges[0][0] 
-					= new ClassifiedJSONEdge(source.edges[0][0]);
-		}
-		
-		for (int i1 = 0; i1 < source.N; i1++) {
-			for (int i2 = 0; i2 < source.N; i2++) {	
-				if (source.edges[i1][i2] != null) {
-				
-					this.edges[i1][i2] 
-							= new ClassifiedJSONEdge(source.edges[i1][i2]);
-				}
-			}// for
-		}// for
-		
 	}
 	
-	
-	
-	
-	public ClassifiedJSONEdge[][] getEdges() {
-		return edges;
-	}
-
-	public void setEdges(ClassifiedJSONEdge[][] edges) {
-		this.edges = edges;
-	}
-
 	public Stack<Integer> getStack() {
 		return stack;
 	}
@@ -106,11 +71,6 @@ public class DFSGraph extends Graph implements Serializable {
 			u.setColor(DFSVertex.Color.GREEN);// visited
 			time++;
 			u.setD(time);
-			
-			if (u.getParent() != null) {
-				edges[u.getParent()][index].setType(ClassifiedJSONEdge.Type.TREE);
-				
-			}
 		}
 			
 		List<Integer> conn = u.getAdjacency();// present vertex successors 
@@ -145,8 +105,7 @@ public class DFSGraph extends Graph implements Serializable {
 	    }
 		
 	    // prepare Ajax response
-	    // need to clone the array edges too 
-
+	    
 	    snapshot = new DFSGraph(this);
 		result.setGraph(snapshot);
 		
@@ -155,16 +114,7 @@ public class DFSGraph extends Graph implements Serializable {
 	}// searchStep
 			
 	
-	public void displayEdges() {
-		for (int i1 = 0; i1 < this.vertices.size(); i1++) {
-			for (int i2 = 0; i2 < this.vertices.size(); i2++) {
-				if (edges[i1][i2] != null) {
-					System.out.println(edges[i1][i2]);
-				}
-			}
-		}
-	}
-	
+	// look for a non visited vertex to begin a new tree
 	public Integer findNotVisited() {
 		int nind = 0;
 		DFSVertex v = null;
@@ -194,24 +144,7 @@ public class DFSGraph extends Graph implements Serializable {
 		for (nind = 0; nind < list.size(); nind++) {
 			int to = list.get(nind);
 			v = (DFSVertex)this.vertices.get(to);
-	 
-			if (edges[from][to].getType() == null) {
-			
-				if (v.getColor().equals(DFSVertex.Color.GREEN)) {
-				
-					edges[from][to]
-							.setType(ClassifiedJSONEdge.Type.BACKWARD);
-				} else if (v.getColor().equals(DFSVertex.Color.BLUE)){
-					if (((DFSVertex)this.vertices.get(from)).getD() < ((DFSVertex)this.vertices.get(nind)).getD()) {
-						edges[from][to]
-								.setType(ClassifiedJSONEdge.Type.FORWARD);
-					} else {
-						edges[from][to]
-							.setType(ClassifiedJSONEdge.Type.CROSS);
-					}
-				}
-			}
-			
+	 		
 			if (v.getColor().equals(DFSVertex.Color.BLACK)) {
 				break;
 			}
