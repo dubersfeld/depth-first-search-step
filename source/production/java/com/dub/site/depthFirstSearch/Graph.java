@@ -1,8 +1,7 @@
 package com.dub.site.depthFirstSearch;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+
 
 /** Graph has Vertices and Adjacency Lists */
 public class Graph implements Serializable {
@@ -12,20 +11,28 @@ public class Graph implements Serializable {
 	 */
 	protected static final long serialVersionUID = 1L;
 
-	protected List<Vertex> vertices;
+	protected Vertex[] vertices;
+	protected int N;
 	
-	public Graph() {
-		vertices = new ArrayList<>();
+	public Graph(int N) {
+		this.N = N;
+		this.vertices = new Vertex[N];
 	}
 	
-	public List<Vertex> getVertices() {
+	
+	
+	public Vertex[] getVertices() {
 		return vertices;
 	}
-	public void setVertices(List<Vertex> vertices) {
+
+
+
+	public void setVertices(Vertex[] vertices) {
 		this.vertices = vertices;
-		
 	}
-		
+
+
+
 	public void display() {// used for debugging only
 		for (Vertex v : vertices) {
 			System.out.println(v);
@@ -35,11 +42,11 @@ public class Graph implements Serializable {
 	}
 	
 	public void display2() {// used for debugging only
-		for (int i1 = 0; i1 < vertices.size(); i1++) {// for each vertex
-			System.out.print(vertices.get(i1).getName() + " -> ");
-			for (int i2 = 0; i2 < vertices.get(i1).getAdjacency().size(); i2++) {
-				int lind = this.vertices.get(i1).getAdjacency().get(i2);
-				System.out.print(this.vertices.get(lind).getName() + " ");
+		for (int i1 = 0; i1 < N; i1++) {// for each vertex
+			System.out.print(vertices[i1].getName() + " -> ");
+			for (int i2 = 0; i2 < vertices[i1].getAdjacency().size(); i2++) {
+				int lind = vertices[i1].getAdjacency().get(i2);
+				System.out.print(vertices[lind].getName() + " ");
 			}
 			System.out.println();
 		}

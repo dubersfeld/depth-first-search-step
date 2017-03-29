@@ -4,16 +4,17 @@ package com.dub.site.depthFirstSearch;
 /** container for AJAX response */
 public class StepResult {
 	
-	private DFSGraph graph;
+	private JSONSnapshot snapshot;
 	private Status status;
 	
 
-	public DFSGraph getGraph() {
-		return graph;
+
+	public JSONSnapshot getSnapshot() {
+		return snapshot;
 	}
 
-	public void setGraph(DFSGraph graph) {
-		this.graph = graph;
+	public void setSnapshot(JSONSnapshot snapshot) {
+		this.snapshot = snapshot;
 	}
 
 	public Status getStatus() {

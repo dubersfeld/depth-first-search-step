@@ -2,6 +2,7 @@ package com.dub.site.depthFirstSearch;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -13,6 +14,9 @@ import com.dub.config.annotation.WebController;
 
 @WebController
 public class DFSController {
+	
+	@Inject
+	private GraphServices graphServices;
 	
 	/** Initialize graph from JSON object sent by browser
 	 * This method is called only one time 
@@ -39,17 +43,15 @@ public class DFSController {
 			DFSVertex v = new DFSVertex();
 			v.setName(jsonVertices.get(i1).getName());
 			v.setColor(DFSVertex.Color.BLACK);
-			graph.getVertices().add(v);
+			graph.getVertices()[i1] = v;
 		}
 		
 		for (int i1 = 0; i1 < jsonEdges.size(); i1++) {
 			JSONEdge edge = jsonEdges.get(i1);
 			int from = edge.getFrom();
 			int to = edge.getTo();
-			DFSVertex v1 = (DFSVertex)graph.getVertices().get(from);
+			DFSVertex v1 = (DFSVertex)graph.getVertices()[from];
 			v1.getAdjacency().add(to);
-			/** helper adjacency matrix needed for edge classification */
-			//graph.getEdges()[from][to] = new ClassifiedJSONEdge(edge);
 		}
 		
 		/** Save the new graph to the session context */
@@ -82,7 +84,17 @@ public class DFSController {
 		HttpSession session = request.getSession();
 		DFSGraph graph = (DFSGraph)session.getAttribute("graph");
 				
-		StepResult result = graph.searchStep();
+		graph.searchStep();// actual step
+		JSONSnapshot snapshot = graphServices.graphToJSON(graph);
+		
+		StepResult result = new StepResult();
+		
+		result.setSnapshot(snapshot);
+		if (graph.isFinished()) {
+			result.setStatus(StepResult.Status.FINISHED);
+		} else {
+			result.setStatus(StepResult.Status.STEP);
+		}
 				
 		return result;
 			

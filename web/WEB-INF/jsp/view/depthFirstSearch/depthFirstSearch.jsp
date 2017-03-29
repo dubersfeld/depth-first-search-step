@@ -23,7 +23,7 @@
 "use strict";
 
 /*
-Here I draw an oriented graph  
+Here I draw an directed graph  
  */
 
  var Debugger = function() { };// create  object
@@ -520,7 +520,7 @@ function canvasApp() {
       		var nX2 = graph.mV[index2].mNx;
       		var nY2 = graph.mV[index2].mNy;
       		if ((Math.abs(nX1-nX2) <= 1) && (Math.abs(nY1-nY2) <= 1) ) {// allow edge           
-        		if (check[index1][index2] == 0) {// oriented graph
+        		if (check[index1][index2] == 0) {// directed graph
           			graph.mAdj[index1].push(index2);
           			check[index1][index2] = 1;
           			edges++;      
@@ -530,7 +530,7 @@ function canvasApp() {
     	 	
     	//var disp;
     	
-    	
+    	/*
     	  graph.mAdj[0] = [7,1,8];
     	    graph.mAdj[1] = [0,2];
     	    graph.mAdj[2] = [3];
@@ -566,7 +566,7 @@ function canvasApp() {
     	    graph.mAdj[32] = [];
     	    graph.mAdj[33] = [32];
     	    graph.mAdj[34] = [33];
-    	    	
+    	  */  	
     
  		//initDraw();// draw graph before search
  		redraw();// draw graph before search
@@ -576,10 +576,6 @@ function canvasApp() {
 		$('#status').text('Ready to search');
  	}// randomize
 
-  	function animSpeedChanged(e) {
-	  	console.log("animSpeedChanged");
-    	delay = 1e4 / e.target.value;
-  	}
      
 	build();
   
@@ -636,7 +632,7 @@ function canvasApp() {
 			dataType : 'json',
 			timeout : 100000,
 			success : function(data) {
-				console.log("SUCCESS");
+				console.log("INITIALIZATION  SUCCESSFUL");
 			},
 			
 			error : function(e) {
@@ -650,9 +646,10 @@ function canvasApp() {
 	  	console.log("initStep completed");
   	}
   
-  	function searchStep(graph) {// change this name in the final version
+  	function searchStep() {// change this name in the final version
 	  	
   	  	$('#initForm').find(':submit')[0].disabled = true;
+  	  	$('#stepForm').find(':submit')[0].disabled = true;
   	
   	  	message = {"type":"STEP"};// minimal message
   	  
@@ -668,7 +665,7 @@ function canvasApp() {
 					
 				if (data["status"] == "STEP" || data["status"] == "FINISHED") {
 					// data is a StepResult container so we extract the graph attribute
-					var stepVertices = data["graph"]["vertices"];
+					var stepVertices = data["snapshot"]["vertices"];
 					for (var i = 0; i < stepVertices.length; i++) {
 						graph.mV[i].mColor = stepVertices[i].color;// update graph
 						graph.mV[i].mD = stepVertices[i].d;
@@ -689,7 +686,8 @@ function canvasApp() {
 					$('#initForm').find(':submit')[0].disabled = true;
 					console.log("Search completed");
 					$('#status').text('Search completed');
-					$('#stepForm').find(':submit')[0].disabled = true;
+				} else {
+				  	$('#stepForm').find(':submit')[0].disabled = false;
 				}
 			},
 			
@@ -704,12 +702,11 @@ function canvasApp() {
   	}
  
   	$("#initelem").submit(function(event) { randomize(graph, Nedges); return false; }); 
-  	//$("#animspeed").change(function(event) { animSpeedChanged(event); return false; });
   	$('#initelem').find(':submit')[0].disabled = false;
   	$('#stepForm').find(':submit')[0].disabled = true;
   
-  	$("#stepForm").submit(function(event) { searchStep(graph); return false; });
-  	$("#initForm").submit(function(event) { initStep(graph); return false; });
+  	$("#stepForm").submit(function(event) { searchStep(); return false; });
+  	$("#initForm").submit(function(event) { initStep(); return false; });
 }// canvasApp
 
 $(document).ready(canvasApp);
