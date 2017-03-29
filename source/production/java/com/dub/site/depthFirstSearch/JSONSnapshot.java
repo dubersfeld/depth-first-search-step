@@ -6,7 +6,6 @@ public class JSONSnapshot {
 	private JSONVertex[] vertices;
 	private JSONAdjacency[] adjacencies;// array of arrays
 	private int N;
-	private int cost;
 	
 	
 	public JSONSnapshot(int N) {
@@ -27,13 +26,6 @@ public class JSONSnapshot {
 		}
 	}
 	
-	public int getCost() {
-		return cost;
-	}
-
-	public void setCost(int cost) {
-		this.cost = cost;
-	}
 
 	public JSONVertex[] getVertices() {
 		return vertices;
