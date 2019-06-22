@@ -1,6 +1,4 @@
 # depth-first-search-step
-Java based demonstration of Depth First Search algorithm using HTML5 Canvas, Javascript and AJAX.
-
 I present here a Java based demonstration of the Depth First Search algorithm. 
 
 The algorithm itself is implemented in Java. Javascript is used for initialization and display only. 
@@ -14,7 +12,17 @@ Green for Forward edges
 Red for Backward edges
 Black for Cross edges
  
-The root context when deployed on Tomcat is depth-first-search
+# Launching the demo
+To launch the demo run the command `mvn spring-boot:run` in project directory. When the application has started open a browser and hit URL `localhost:8080/depth-first-search`.
+
+Here are some screen shots that can be seen during the demo:
+
+Graph initialized
+![alt text](images/initGraph.png "Graph initialized")
+
+![alt text](images/searchStep.png "Search step")
+
+![alt text](images/searchCompleted.png "Search completed")
 
 For an animated version of this algorithm please visit this repository:
 
