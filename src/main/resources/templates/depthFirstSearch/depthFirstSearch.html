@@ -519,7 +519,6 @@ function canvasApp() {
     	}// while
     	 	
     	//var disp;
-    	
     	/*
     	  graph.mAdj[0] = [7,1,8];
     	    graph.mAdj[1] = [0,2];
@@ -556,13 +555,13 @@ function canvasApp() {
     	    graph.mAdj[32] = [];
     	    graph.mAdj[33] = [32];
     	    graph.mAdj[34] = [33];
-    	  */  	
+    	 */
     
  		//initDraw();// draw graph before search
  		redraw();// draw graph before search
  
 		$('#initForm').find(':submit')[0].disabled = false;
-    	
+		$('#stepForm').find(':submit')[0].disabled = true;
 		$('#status').text('Ready to search');
  	}// randomize
 
@@ -723,6 +722,8 @@ I follow closely the approach of Cormen in his classical textbook.</p>
 <p>The graph edges are randomly initialized. 
 The search always start from the same vertex named a0.<br/>
 On each step a new Ajax request is sent to the server that sends a response that is used to update the graph.<br/>
+All newly discovered vertices are colored in green.<br/>  
+These snapshots are used to update the graph.<br/>
 All newly discovered vertices are colored in green.<br/> 
 When the search is completed all vertices are blue.<br/> 
 The values of d and f are displayed as d/f.<br>

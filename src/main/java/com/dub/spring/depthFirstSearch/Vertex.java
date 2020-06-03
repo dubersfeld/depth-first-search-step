@@ -7,7 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /** Vertex has an adjacency list of vertices represented as indices */
-public class Vertex implements Cloneable {
+public class Vertex {
 
 	/**
 	 * 
@@ -46,15 +46,5 @@ public class Vertex implements Cloneable {
 		this.adjacency = adjacency;
 	}
 	
-	/*
-	public Vertex clone() {
-		Vertex v = new Vertex();
-		v.name = this.name;
-		v.adjacency = new ArrayList<>();
-		v.adjacency.addAll(adjacency);
-		return v;
-	}
-	*/
-
 
 }

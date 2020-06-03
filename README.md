@@ -24,6 +24,9 @@ Graph initialized
 
 ![alt text](images/searchCompleted.png "Search completed")
 
+For video demo of this project follow this link:
+https://youtu.be/xfqG61aiECo
+
 For an animated version of this algorithm please visit this repository:
 
 https://github.com/dubersfeld/depth-first-search-anim 
